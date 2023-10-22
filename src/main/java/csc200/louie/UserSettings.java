@@ -8,6 +8,12 @@ public class UserSettings {
 
     public UserSettings(int pointsCount) {
         this.pointsCount = pointsCount;
+        this.level = 1;
+        this.progress = 0.1f;
+    }
+
+    public void setPointsCount(int newCount) {
+        this.pointsCount = newCount;
     }
 
     public void addPoints() {

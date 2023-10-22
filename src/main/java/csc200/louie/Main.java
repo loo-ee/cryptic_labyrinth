@@ -1,19 +1,73 @@
 package csc200.louie;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Scanner;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.*;
+import java.util.Timer;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Main {
     private static final ArrayList<User> users = SystemSettings.getUsers();
+    private static final AtomicBoolean isTimeUp = new AtomicBoolean(false);
     private static final Scanner scanner = new Scanner(System.in);
+    private static Timer timer = null;
+    private static TimerTask task = null;
+    private static final boolean isGameWon = false;
+    private static boolean isGameFinished = false;
+    private static int currentQuestionNumber = 0;
+    private static int timerDuration = 15;
+    private static int questionLevel = 0;
+    private static String[] levels = {"Easy", "Medium", "Hard"};
+
 
     public static void main(String[] args) {
+        login();
         welcomeScreen();
+
+        System.out.println("Get ready player...");
+        System.out.println("Press enter...");
+        scanner.nextLine();
+
+        while (!isGameFinished) {
+            timer = new Timer();
+            task = new PrintTask(isTimeUp);
+            String currentQuestion = Questionnaire.getQuizQuestionsAndAnswers()[questionLevel][currentQuestionNumber][0];
+            String currentAnswer = Questionnaire.getQuizQuestionsAndAnswers()[questionLevel][currentQuestionNumber][1];
+            String answer;
+
+            timer.schedule(task, timerDuration * 1000L);
+            System.out.println(levels[questionLevel] + ": " + currentQuestion);
+            System.out.print(">> ");
+            answer= scanner.nextLine();
+
+            currentQuestionNumber += 1;
+
+            if (!isTimeUp.get()) {
+                isTimeUp.set(false);
+                timer.cancel();
+            }
+
+            if (Objects.equals(currentAnswer, answer) && !isTimeUp.get()) {
+                SystemSettings.getLoggedInUser().playerAnsweredCorrect();
+            }
+
+            if (currentQuestionNumber == 10) {
+                currentQuestionNumber = 0;
+                questionLevel += 1;
+                timerDuration /= 2;
+                System.out.println();
+            }
+
+            if (questionLevel == 3)
+                isGameFinished = true;
+        }
     }
 
     private static void login() {
+        boolean isMenuRunning = true;
+
         if (users.isEmpty()) {
             System.out.println("[CREATE AN ACCOUNT]");
             System.out.print("Enter user name: ");
@@ -40,7 +94,7 @@ public class Main {
         }
 
         while (true) {
-            System.out.println("[LOGIN ACCOUNT]");
+            System.out.println("\n[LOGIN ACCOUNT]");
             System.out.print("Enter username: ");
             String usernameInput = scanner.nextLine();
             System.out.print("Enter password: ");
@@ -55,41 +109,54 @@ public class Main {
             break;
         }
 
-        String choices = """
-                [1] Play game
+        while (isMenuRunning) {
+            String choices = """
+                \n[1] Play game
                 [2] Change user password
                 [3] Change points given
                 [0] Quit
                 """;
 
-        System.out.println(choices);
-        System.out.print("Enter choice here: ");
-        char choice = scanner.next().charAt(0);
-        scanner.nextLine();
+            System.out.println(choices);
+            System.out.print("Enter choice here: ");
+            char choice = scanner.next().charAt(0);
+            scanner.nextLine();
 
-        switch (choice) {
-            case '1' -> System.out.println("Now playing game...");
+            switch (choice) {
+                case '0' -> isMenuRunning = false;
 
-            case '2' -> {
-                System.out.print("Enter old password: ");
-                String oldPass = scanner.nextLine();
+                case '1' -> {
+                    System.out.println("Now playing game...");
+                    isMenuRunning = false;
+                }
 
-                if (Objects.equals(SystemSettings.getLoggedInUser().getPassword(), oldPass)) {
-                    System.out.print("Enter new password: ");
-                    String newPass = scanner.nextLine();
-                    System.out.print("Confirm password: ");
-                    String confirmPass = scanner.nextLine();
+                case '2' -> {
+                    System.out.print("Enter old password: ");
+                    String oldPass = scanner.nextLine();
 
-                    if (Objects.equals(newPass, confirmPass)) {
-                        SystemSettings.getLoggedInUser().setPassword(newPass);
-                        System.out.println("[PASSWORD CHANGED SUCCESSFULLY]");
+                    if (Objects.equals(SystemSettings.getLoggedInUser().getPassword(), oldPass)) {
+                        System.out.print("Enter new password: ");
+                        String newPass = scanner.nextLine();
+                        System.out.print("Confirm password: ");
+                        String confirmPass = scanner.nextLine();
+
+                        if (Objects.equals(newPass, confirmPass)) {
+                            SystemSettings.getLoggedInUser().setPassword(newPass);
+                            System.out.println("[PASSWORD CHANGED SUCCESSFULLY]");
+                        }
+                    } else {
+                        System.out.println("[TRY AGAIN]");
                     }
-                } else {
-                    System.out.println("[TRY AGAIN]");
+                }
+
+                case '3' -> {
+                    System.out.print("Enter new points to be given: ");
+                    int newPoints = Integer.parseInt(scanner.nextLine());
+
+                    SystemSettings.getLoggedInUser().getSettings().setPointsCount(newPoints);
+                    System.out.println("[POINTS COUNT CHANGED]");
                 }
             }
-
-
         }
     }
 

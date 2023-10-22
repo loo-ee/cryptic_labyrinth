@@ -19,6 +19,10 @@ public class User {
         return this.password;
     }
 
+    public UserSettings getSettings() {
+        return this.settings;
+    }
+
     public void setPassword(String password) {
         this.password = password;
     }
