@@ -12,14 +12,12 @@ public class Main {
     private static final ArrayList<User> users = SystemSettings.getUsers();
     private static final AtomicBoolean isTimeUp = new AtomicBoolean(false);
     private static final Scanner scanner = new Scanner(System.in);
-    private static Timer timer = null;
-    private static TimerTask task = null;
     private static final boolean isGameWon = false;
     private static boolean isGameFinished = false;
     private static int currentQuestionNumber = 0;
     private static int timerDuration = 15;
     private static int questionLevel = 0;
-    private static String[] levels = {"Easy", "Medium", "Hard"};
+    private final static String[] levels = {"Easy", "Medium", "Hard"};
 
 
     public static void main(String[] args) {
@@ -31,8 +29,8 @@ public class Main {
         scanner.nextLine();
 
         while (!isGameFinished) {
-            timer = new Timer();
-            task = new PrintTask(isTimeUp);
+            Timer timer = new Timer();
+            TimerTask task = new PrintTask(isTimeUp);
             String currentQuestion = Questionnaire.getQuizQuestionsAndAnswers()[questionLevel][currentQuestionNumber][0];
             String currentAnswer = Questionnaire.getQuizQuestionsAndAnswers()[questionLevel][currentQuestionNumber][1];
             String answer;
@@ -63,6 +61,10 @@ public class Main {
             if (questionLevel == 3)
                 isGameFinished = true;
         }
+
+        User currentUser = SystemSettings.getLoggedInUser();
+        System.out.println("[RESULTS]");
+        System.out.println(currentUser.getSettings());
     }
 
     private static void login() {
