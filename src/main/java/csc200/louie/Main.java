@@ -1,11 +1,6 @@
 package csc200.louie;
 
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.*;
-import java.util.Timer;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Main {
@@ -40,16 +35,20 @@ public class Main {
             System.out.print(">> ");
             answer= scanner.nextLine();
 
-            currentQuestionNumber += 1;
-
             if (!isTimeUp.get()) {
-                isTimeUp.set(false);
                 timer.cancel();
             }
 
             if (Objects.equals(currentAnswer, answer) && !isTimeUp.get()) {
                 SystemSettings.getLoggedInUser().playerAnsweredCorrect();
+                SystemSettings.getLoggedInUser().getSettings().setAnswer(questionLevel, currentQuestionNumber, answer);
+            } else if (!Objects.equals(currentAnswer, answer) && !Objects.equals(answer, "")) {
+                SystemSettings.getLoggedInUser().getSettings().setAnswer(questionLevel, currentQuestionNumber, "[Answered wrong] " + answer);
+            } else if (isTimeUp.get()) {
+                SystemSettings.getLoggedInUser().getSettings().setAnswer(questionLevel, currentQuestionNumber, "[Ran out of time]");
             }
+
+            currentQuestionNumber += 1;
 
             if (currentQuestionNumber == 10) {
                 currentQuestionNumber = 0;
@@ -60,11 +59,26 @@ public class Main {
 
             if (questionLevel == 3)
                 isGameFinished = true;
+
+            timer.cancel();
+            timer.purge();
         }
 
         User currentUser = SystemSettings.getLoggedInUser();
         System.out.println("[RESULTS]");
         System.out.println(currentUser.getSettings());
+        System.out.println("\n[ANSWERS]: ");
+
+        String[][] userAnswers = SystemSettings.getLoggedInUser().getSettings().getAnswers();
+
+        for (int i = 0; i < userAnswers.length; i++) {
+            String[] currentSet = userAnswers[i];
+            for (int k = 0; k < currentSet.length; k++) {
+                System.out.println("\n" + Questionnaire.getQuizQuestionsAndAnswers()[i][k][0]);
+                System.out.println("User answer: " + currentSet[k]);
+                System.out.println("Correct answer: " + Questionnaire.getQuizQuestionsAndAnswers()[i][k][1]);
+            }
+        }
     }
 
     private static void login() {

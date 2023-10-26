@@ -6,10 +6,20 @@ public class UserSettings {
     private float progress;
     private int pointsCount;
 
+    private final String[][] answers = new String[3][10];
+
     public UserSettings(int pointsCount) {
         this.pointsCount = pointsCount;
         this.level = 1;
         this.progress = 0.1f;
+    }
+
+    public void setAnswer(int setNumber, int number, String answer) {
+        this.answers[setNumber][number] = answer;
+    }
+
+    public String[][] getAnswers() {
+        return this.answers;
     }
 
     public void setPointsCount(int newCount) {
