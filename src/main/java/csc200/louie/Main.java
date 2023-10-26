@@ -79,6 +79,13 @@ public class Main {
                 System.out.println("Correct answer: " + Questionnaire.getQuizQuestionsAndAnswers()[i][k][1]);
             }
         }
+
+        System.out.println("\n[GAME FINISHED]");
+        System.out.println("Thank you for playing!");
+
+        System.out.println("Programmed by Jann Louie Q. Almirante");
+        System.out.println("Section A");
+        System.out.println("CSC 200 - Object Oriented Design and Programming");
     }
 
     private static void login() {
@@ -180,33 +187,26 @@ public class Main {
         String welcomeMessage = """
                 \t\t\t\t\t\tWELCOME TO CRYPTIC LABYRINTH!
                 
-                "Cryptic Labyrinth: The Quest for the Lost Key" is an immersive text-based adventure
-                that plunges you into the depths of a mysterious labyrinth, concealed within the heart
-                of a forgotten realm. Your mission is to recover the fabled Lost Key, a powerful artifact
-                said to unlock unimaginable secrets. But beware, this labyrinth is riddled with enigmatic
-                puzzles and cunning traps. Your every choice and your ability to solve perplexing riddles
-                will determine your success.
+                "Cryptic Labyrinth: The Quest for the Lost Key" is an immersive text-based quiz game. The riddles
+                and questions are all about cryptography and algorithms. Beware adventurer as this labyrinth is like
+                no other!
                             
                     Game Mechanics:
+                        Points System: At the outset, you start with 0 points. A timer will be present and
+                        correctly answering questions will earn you points. But beware of the timer! The timer
+                        gradually shortens in each round.
                                 
-                        Exploration: You'll navigate through a series of interconnected rooms, each with
-                        its unique challenges and mysteries. Use simple text commands to move from one room
-                        to another, like "go north" or "enter the chamber."
-                                
-                        Points System: At the outset, you start with 0 points. Correctly answering riddles
-                        and quizzes earns you 10 points, while incorrect responses deduct 5 points. To
-                        unlock the secret chamber, you must amass a total of 50 points.
-                                
-                        Riddles and Quizzes: Throughout the labyrinth, you'll encounter riddles and quizzes
-                        that demand your wit and knowledge. To answer, simply type your response. A correct
-                        answer brings you closer to victory, while a wrong answer may challenge your progress.
-                                
-                        Decision-Making: The game's narrative is influenced by your choices. Be prepared to
-                        make crucial decisions that can impact your point total and the direction of the story.
-                                
-                        Objective: Your ultimate objective is to collect enough points to unlock the secret
-                        chamber and recover the Lost Key. Your decisions, puzzle-solving skills, and knowledge
-                        will shape your journey and determine the outcome.
+                   Set 1: Easy
+                        This round is the easiest and only accepts "Yes" or "No".
+                       
+                   Set 2: Medium
+                        This round is a bit harder than the previous. It is an identification type of answering.
+                        Only accepts one word for an answer and the first letter must be capitalized.
+                        
+                   Set 3:
+                        This round is the hardest and also has the shortest amount of time to answer.
+                        It is an identification type of answering. Only accepts one word for an answer
+                        and the first letter must be capitalized.
                 """;
 
         System.out.println(welcomeMessage);
